@@ -3,7 +3,6 @@ package simplebank
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"testing"
 	"time"
 
@@ -63,7 +62,10 @@ func TestUpdateAccount(t *testing.T) {
 
 	require.NoError(t, err)
 
-	require.Equal(t, account1.Balance, arg.Balance)
+	acc, err := testQueries.GetAccount(context.Background(), account1.ID)
+	require.NoError(t, err)
+
+	require.Equal(t, acc.Balance, arg.Balance)
 }
 
 func TestDeleteAccount(t *testing.T) {
@@ -73,8 +75,6 @@ func TestDeleteAccount(t *testing.T) {
 	require.NoError(t, err)
 
 	account2, err := testQueries.GetAccount(context.Background(), account1.ID)
-
-	fmt.Println(err)
 
 	require.Error(t, err)
 	require.EqualError(t, err, sql.ErrNoRows.Error())
